@@ -1,38 +1,53 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
-// Sample data; replace with actual data fetching logic
-const sampleStudents = [
-    { id: 1, name: 'John Doe', class: 'Class 1', year: '2021', age: 10, address: '123 Main St' },
-    { id: 2, name: 'Jane Smith', class: 'Class 2', year: '2022', age: 11, address: '456 Elm St' },
-    { id: 3, name: 'Alice Johnson', class: 'Class 3', year: '2023', age: 12, address: '789 Oak St' },
-    // Add more students as needed
-];
-
-function StudentProfile() {
-    const { id } = useParams();
+const StudentProfile = () => {
+    const { id } = useParams(); // Get the student ID from the URL
     const [student, setStudent] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Fetch or filter the student details using the ID
-        const studentDetail = sampleStudents.find((student) => student.id === parseInt(id));
-        setStudent(studentDetail);
+        const fetchStudent = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/students/${id}`);
+                setStudent(response.data);
+                setLoading(false);
+            } catch (err) {
+                setError('Failed to fetch student details');
+                setLoading(false);
+            }
+        };
+
+        fetchStudent();
     }, [id]);
 
-    if (!student) {
-        return <div>Student not found</div>;
-    }
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
-        <div>
-            <h1>Student Profile</h1>
-            <p><strong>Name:</strong> {student.name}</p>
-            <p><strong>Class:</strong> {student.class}</p>
-            <p><strong>Year:</strong> {student.year}</p>
-            <p><strong>Age:</strong> {student.age}</p>
-            <p><strong>Address:</strong> {student.address}</p>
+        <div className="student-profile">
+            <h2>Student Profile</h2>
+            {student ? (
+                <div>
+                    <p><strong>Name:</strong> {student.name}</p>
+                    <p><strong>Mother's Name:</strong> {student.mothersName}</p>
+                    <p><strong>Class:</strong> {student.classStudy}</p>
+                    <p><strong>Date of Birth:</strong> {student.dob}</p>
+                    <p><strong>Father's Name:</strong> {student.fathersName}</p>
+                    <p><strong>Gender:</strong> {student.gender}</p>
+                    <p><strong>Roll Number:</strong> {student.rollnumber}</p>
+                    <p><strong>Address:</strong> {student.address}</p>
+                    <p><strong>Admission Year:</strong> {student.admissionyear}</p>
+                    <p><strong>Document:</strong> <a href={student.documentUrl} target="_blank" rel="noopener noreferrer">View Document</a></p>
+                    <p><strong>Student Image:</strong> <img src={student.studentImageUrl} alt="Student" /></p>
+                </div>
+            ) : (
+                <p>No student data available</p>
+            )}
         </div>
     );
-}
+};
 
 export default StudentProfile;

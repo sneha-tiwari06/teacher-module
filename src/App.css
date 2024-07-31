@@ -1,0 +1,68 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+:root{
+  --primary-color: linear-gradient(135deg, #6a11cb, #2575fc);
+  --secondary-color: #2ecc71;
+  --background-color: #f1c40f;
+
+}
+a{
+  text-decoration: none;
+  color: #fff;
+}
+a:hover{
+  color: #000;
+}
+.dashboard-title{
+  border-bottom: 2px solid white;
+  font-family: 'Times New Roman', Times, serif;
+}
+.dashboard-body{
+  background: var(--primary-color);
+  height: 100vh;
+  color: #fff;
+}
+.dashboard-tab{
+  margin-bottom: 20px;
+  cursor:pointer;
+}
+.dashboard-tab p span:hover{
+  background-color: white;
+  border-radius: 5px;
+  color: #000;
+  padding: 5px 10px;
+ transition: all 200ms ease-in-out;
+}
+.icons{
+  margin-right: 20px;
+  margin-left: 10px;
+}
+.arrow-icon {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.3s ease;
+  margin-left: 20px;
+}
+
+.arrow-icon.rotate {
+  transform: rotate(180deg);
+}
+
+.dropdown-content {
+  width:70%;
+  margin-left:50px;
+  padding: 10px;
+  background: #2c11cb96;
+  border-radius: 10px;
+  transition: height 0.3s ease-in-out;
+}
+.dropdown-content p span:hover{
+  background-color: white;
+  color: #000;
+ transition: all 200ms ease-in-out;
+}
+.dropdown-icon{
+  margin-right: 10px;
+}

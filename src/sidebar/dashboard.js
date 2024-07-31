@@ -13,8 +13,8 @@ function Dashboard() {
     };
     return (
         <div className='w-100 dashboard-main'>
-            <div className='row g-0'>
-                <div className='col-md-2'>
+
+
                     <div className='dashboard-body'>
                         <div className='dashboard-header'>
                             <h2 className='dashboard-title mb-4 text-center'>Welcome!</h2>
@@ -73,9 +73,10 @@ function Dashboard() {
 
                         </div>
                     </div>
-                </div>
+
+
             </div>
-        </div>
+       
     )
 }
 

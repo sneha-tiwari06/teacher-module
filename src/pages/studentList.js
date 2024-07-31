@@ -1,34 +1,34 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const StudentList = () => {
-    const [selectedClass, setSelectedClass] = useState('');
-    const [selectedYear, setSelectedYear] = useState('');
+    const [formData, setFormData] = useState({
+        classStudy: '',
+        admissionyear: '',
+    });
     const [students, setStudents] = useState([]);
 
-    const classes = ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5'];
-    const years = ['2021', '2022', '2023', '2024'];
-
-    const sampleStudents = [
-        { id: 1, name: 'John Doe', class: 'Class 1', year: '2021' },
-        { id: 2, name: 'Jane Smith', class: 'Class 2', year: '2022' },
-        { id: 3, name: 'Alice Johnson', class: 'Class 3', year: '2023' },
-        { id: 4, name: 'Bob Brown', class: 'Class 1', year: '2022' },
-        { id: 5, name: 'Charlie Davis', class: 'Class 4', year: '2024' },
-    ];
-
-    const handleClassChange = (e) => {
-        setSelectedClass(e.target.value);
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [id]: value
+        }));
     };
 
-    const handleYearChange = (e) => {
-        setSelectedYear(e.target.value);
-    };
-
-    const filterStudents = () => {
-        const filtered = sampleStudents.filter(
-            (student) => student.class === selectedClass && student.year === selectedYear
-        );
-        setStudents(filtered);
+    const fetchStudents = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/students', {
+                params: {
+                    classStudy: formData.classStudy,
+                    admissionyear: formData.admissionyear,
+                },
+            });
+            setStudents(response.data);
+        } catch (error) {
+            console.error('Error fetching students:', error);
+        }
     };
 
     return (
@@ -36,50 +36,50 @@ const StudentList = () => {
             <div className="row g-0">
                 <div className="col-md-10">
                     <div className="student-filter">
+                        <h2 className='heading text-center'>Students Overview</h2>
                         <div className='row'>
                             <div className='col-md-4'>
-                        <div className="mb-3">
-                            <label htmlFor="classSelect" className="form-label">Select Class</label>
-                            <select
-                                id="classSelect"
-                                className="form-select"
-                                value={selectedClass}
-                                onChange={handleClassChange}
-                            >
-                                <option value="">Select Class</option>
-                                {classes.map((classOption, index) => (
-                                    <option key={index} value={classOption}>
-                                        {classOption}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        </div>
-                        <div className='col-md-4'>
+                                <div className="mb-3">
+                                    <label htmlFor="classStudy" className="form-label">Class</label>
+                                    <select
+                                        id="classStudy"
+                                        className="form-select"
+                                        value={formData.classStudy}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">Select Class</option>
+                                        <option value="class1">Class 1</option>
+                                        <option value="class2">Class 2</option>
+                                        <option value="class3">Class 3</option>
+                                        <option value="class4">Class 4</option>
+                                        <option value="class5">Class 5</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className='col-md-4'>
+                                <div className="mb-3">
+                                    <label htmlFor="admissionyear" className="form-label">Year Of Admission</label>
+                                    <select
+                                        id="admissionyear"
+                                        className="form-select"
+                                        value={formData.admissionyear}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">Select Year</option>
+                                        <option value="2024">2024-25</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className='col-md-4 mt-4'>
+                                <div className='action-button d-flex'> <button className='button-all' onClick={fetchStudents}>Show Students</button>
+                                    <button className='button-all' ><Link to='/add-students'>Add Students</Link></button>
+                                </div>
 
-                        <div className="mb-3">
-                            <label htmlFor="yearSelect" className="form-label">Select Year</label>
-                            <select
-                                id="yearSelect"
-                                className="form-select"
-                                value={selectedYear}
-                                onChange={handleYearChange}
-                            >
-                                <option value="">Select Year</option>
-                                {years.map((yearOption, index) => (
-                                    <option key={index} value={yearOption}>
-                                        {yearOption}
-                                    </option>
-                                ))}
-                            </select>
+                            </div>
+
+
                         </div>
-                        </div>
-                        </div>
-                        <button className="btn btn-primary" onClick={filterStudents}>
-                            Show Students
-                        </button>
                     </div>
-
 
                     <div className="student-list mt-4">
                         {students.length > 0 ? (
@@ -93,18 +93,22 @@ const StudentList = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {students.map((student) => (
-                                        <tr key={student.id}>
-                                            <td>{student.id}</td>
+                                    {students.map((student, index) => (
+                                        <tr key={student._id}>
+                                            <td>
+                                                <Link to={`/student-profile/${student._id}`} className='id-student'>
+                                                    {index + 1}
+                                                </Link>
+                                            </td>
                                             <td>{student.name}</td>
-                                            <td>{student.class}</td>
-                                            <td>{student.year}</td>
+                                            <td>{student.classStudy}</td>
+                                            <td>{student.admissionyear}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         ) : (
-                            <p>No students found. Please select a class and year.</p>
+                            <p>Please select a class and year to check student.</p>
                         )}
                     </div>
                 </div>
